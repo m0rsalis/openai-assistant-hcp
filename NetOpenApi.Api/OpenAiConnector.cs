@@ -34,6 +34,7 @@ namespace NetOpenApi.Api
 
                 /// give instruction as System
                 chat.AppendSystemMessage(context);
+                chat.RequestParameters.Temperature = 0.9;
                 chatRequest.SessionId = Guid.NewGuid().ToString();
                 Conversations.Add(chatRequest.SessionId, chat);
             } 
