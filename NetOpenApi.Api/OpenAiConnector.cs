@@ -58,6 +58,18 @@ namespace NetOpenApi.Api
                     chat.AppendSystemMessage("Ask user to provide info for following fields: " + string.Join(",", emptyFields));
                     response = await chat.GetResponseFromChatbotAsync();
                 }
+                else
+                {
+                    chat.AppendSystemMessage("Tell user that you have all the necessary data and that you will process his request");
+
+                    return new ChatResponse
+                    {
+                        FollowupMessage = await chat.GetResponseFromChatbotAsync(),
+                        ParsedModel = ContainsJson(response) ? ExtractJsonFromText(response) : string.Empty,
+                        RequestFullyParsed = ContainsJson(response),
+                        SessionId = chatRequest.SessionId
+                    };
+                }
             }
 
             return new ChatResponse
