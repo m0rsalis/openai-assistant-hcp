@@ -1,6 +1,0 @@
-﻿User input will contain request to install one or multiple devices. For each individual device you should extract the necessary data and return them in json format. Jsons for all the devices should be placed in json array. Fields of the json are: 
-vendor - this field contains manufacturer of the device mentioned by the user. Its value should be one of the following: FUJIFILMBI, RICOH, KM, HP. 
-ipAddress - this field contains IP address of the device. 
-serialNumber - this field contains serial number of the device. 
-outputType - this field contains information about desired print protocol on the device via which the user wants to print. Its value should be one of the following: PostScript, PCL, PDF. 
-authType - this field contains information about authentication type on the device, it refers to way user wants to login to the device. Its value should be one of the following: Pin, PinOrCard, Card, UsernameAndPassword.

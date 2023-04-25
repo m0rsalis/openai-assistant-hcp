@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.4.33110.190
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetOpenAI", "NetOpenAI.csproj", "{0D7DA512-009F-4333-8C39-233BF5AFD4A3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetOpenApi.Api", "NetOpenApi.Api\NetOpenApi.Api.csproj", "{46A31DE4-A62A-43A4-98C2-73661A02320C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,10 +11,10 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{0D7DA512-009F-4333-8C39-233BF5AFD4A3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0D7DA512-009F-4333-8C39-233BF5AFD4A3}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{0D7DA512-009F-4333-8C39-233BF5AFD4A3}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0D7DA512-009F-4333-8C39-233BF5AFD4A3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{46A31DE4-A62A-43A4-98C2-73661A02320C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{46A31DE4-A62A-43A4-98C2-73661A02320C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{46A31DE4-A62A-43A4-98C2-73661A02320C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{46A31DE4-A62A-43A4-98C2-73661A02320C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
