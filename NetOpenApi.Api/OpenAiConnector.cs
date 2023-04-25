@@ -45,7 +45,7 @@ namespace NetOpenApi.Api
 
             chat.AppendUserInput(chatRequest.RequestMessage);
 
-            var response = await chat.GetResponseFromChatbotAsync();
+            var response = await ProcessOpenAIResponse(chat);
 
             if (ContainsJson(response))
             {
@@ -56,7 +56,7 @@ namespace NetOpenApi.Api
                 if (emptyFields.Any())
                 {
                     chat.AppendSystemMessage("Ask user to provide info for following fields: " + string.Join(",", emptyFields));
-                    response = await chat.GetResponseFromChatbotAsync();
+                    response = await ProcessOpenAIResponse(chat);
                 }
                 else
                 {
@@ -64,7 +64,7 @@ namespace NetOpenApi.Api
 
                     return new ChatResponse
                     {
-                        FollowupMessage = await chat.GetResponseFromChatbotAsync(),
+                        FollowupMessage = await ProcessOpenAIResponse(chat),
                         ParsedModel = ContainsJson(response) ? ExtractJsonFromText(response) : string.Empty,
                         RequestFullyParsed = ContainsJson(response),
                         SessionId = chatRequest.SessionId
@@ -79,6 +79,23 @@ namespace NetOpenApi.Api
                 RequestFullyParsed = ContainsJson(response),
                 SessionId = chatRequest.SessionId
             };
+        }
+
+        async Task<string> ProcessOpenAIResponse(Conversation chat, int numberOfRetries = 1)
+        {
+            for (int currentTry = 0; currentTry < numberOfRetries; currentTry++)
+            {
+                try
+                {
+                    return await chat.GetResponseFromChatbotAsync();
+                }
+                catch(Exception e)
+                {
+                    // TODO: log
+                }
+            }
+
+            return string.Empty; // TODO: handle
         }
 
         static bool ContainsJson(string text)
