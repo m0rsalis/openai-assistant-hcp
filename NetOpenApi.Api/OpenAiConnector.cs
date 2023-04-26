@@ -58,13 +58,12 @@ namespace NetOpenApi.Api
                 var emptyFields = new List<string>();
                 foreach (var printer in printers)
                 {
-                    emptyFields = printer.GetEmptyFieldNames(); //TODO specify for which printer is missing
+                    emptyFields = printer.GetEmptyFieldNames();
                 }
 
                 if (emptyFields.Any())
                 {
                     chat.AppendSystemMessage("Ask user about the empty fields to provide the information.");
-                    //chat.AppendSystemMessage("Ask user to provide info for following fields: " + string.Join(",", emptyFields));
                     response = await ProcessOpenAIResponse(chat);
                 }
                 else
