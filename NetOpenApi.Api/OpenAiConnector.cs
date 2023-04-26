@@ -2,6 +2,7 @@
 using NetOpenApi.Api.Models;
 using OpenAI_API;
 using OpenAI_API.Chat;
+using System.Reflection;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 
@@ -34,7 +35,7 @@ namespace NetOpenApi.Api
 
                 /// give instruction as System
                 chat.AppendSystemMessage(context);
-                chat.RequestParameters.Temperature = 0.9;
+                chat.RequestParameters.Temperature = 0.5;
                 chatRequest.SessionId = Guid.NewGuid().ToString();
                 Conversations.Add(chatRequest.SessionId, chat);
             } 
@@ -50,12 +51,17 @@ namespace NetOpenApi.Api
             if (ContainsJson(response))
             {
                 var json = ExtractJsonFromText(response);
-                var printer = JsonSerializer.Deserialize<PrinterEntity>(json);
-                var emptyFields = printer.GetEmptyFieldNames();
+                var printers = JsonSerializer.Deserialize<PrinterEntity[]>(json);
+                var emptyFields = new List<string>();
+                foreach (var printer in printers)
+                {
+                    emptyFields = printer.GetEmptyFieldNames(); //TODO specify for which printer is missing
+                }
 
                 if (emptyFields.Any())
                 {
-                    chat.AppendSystemMessage("Ask user to provide info for following fields: " + string.Join(",", emptyFields));
+                    chat.AppendSystemMessage("Ask user about the empty fields to provide the information.");
+                    //chat.AppendSystemMessage("Ask user to provide info for following fields: " + string.Join(",", emptyFields));
                     response = await ProcessOpenAIResponse(chat);
                 }
                 else
@@ -111,8 +117,8 @@ namespace NetOpenApi.Api
             }
 
             // Search for JSON block enclosed in triple backticks
-            int startIndex = text.IndexOf("{");
-            int endIndex = text.LastIndexOf("}");
+            int startIndex = text.IndexOf("[");
+            int endIndex = text.LastIndexOf("]");
 
             if (startIndex >= 0 && endIndex > startIndex)
             {
