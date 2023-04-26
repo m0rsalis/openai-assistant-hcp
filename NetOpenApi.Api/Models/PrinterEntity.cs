@@ -48,5 +48,17 @@ namespace NetOpenApi.Api.Models
 
             return emptyFieldNames;
         }
+
+        public Dictionary<string, string> GetFormParams()
+        {
+            return new Dictionary<string, string>
+            {
+                { "domainname", "hound.127.0.0.1.nip.io" },
+                { "portname", Name },
+                { "address", IpAddress },
+                { "porttype", "1" },
+                { "vendor", Vendor },
+            };
+        }
     }
 }

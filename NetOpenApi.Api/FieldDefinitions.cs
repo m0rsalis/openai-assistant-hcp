@@ -11,7 +11,7 @@ namespace NetOpenApi.Api
                 FieldName= "Device type",
                 FieldJsonToken = "vendor",
                 FieldDescription = "Contains manufacturer of the device user requests action for",
-                PossibleValues = new List<string> { "FUJIFILMBI", "RICOH" }
+                PossibleValues = new List<string> { "fujifilm", "ricoh" }
             },
             new FieldDefinition
             {

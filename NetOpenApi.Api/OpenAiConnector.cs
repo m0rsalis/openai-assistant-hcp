@@ -2,7 +2,10 @@
 using NetOpenApi.Api.Models;
 using OpenAI_API;
 using OpenAI_API.Chat;
+using System.Net.Security;
 using System.Reflection;
+using System.Reflection.PortableExecutable;
+using System.Security.Cryptography.X509Certificates;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 
@@ -51,7 +54,7 @@ namespace NetOpenApi.Api
             if (ContainsJson(response))
             {
                 var json = ExtractJsonFromText(response);
-                var printers = JsonSerializer.Deserialize<PrinterEntity[]>(json);
+                var printers = JsonSerializer.Deserialize<List<PrinterEntity>>(json);
                 var emptyFields = new List<string>();
                 foreach (var printer in printers)
                 {
@@ -66,7 +69,9 @@ namespace NetOpenApi.Api
                 }
                 else
                 {
-                    chat.AppendSystemMessage("Tell user that you have all the necessary data and that you will process his request");
+                    chat.AppendSystemMessage("Tell user that you that you have successfully processed his request. And ask him if he needs any more help");
+
+                    await CreatePrinterToHCP(printers);
 
                     return new ChatResponse
                     {
@@ -128,6 +133,37 @@ namespace NetOpenApi.Api
             }
 
             return string.Empty;
+        }
+
+        async Task CreatePrinterToHCP(List<PrinterEntity> printers)
+        {
+            using (var httpClient = new HttpClient(new HttpClientHandler { ServerCertificateCustomValidationCallback = IgnoreSslErrors }))
+            {
+                try
+                {
+                    httpClient.DefaultRequestHeaders.Add("X-Api-Key", File.ReadAllText("api-key-hcp.txt"));
+                    httpClient.DefaultRequestHeaders.Add("X-Account-Domain", "hound.127.0.0.1.nip.io");
+
+                    foreach (var printer in printers)
+                    {
+                        var content = new FormUrlEncodedContent(printer.GetFormParams());
+                        var response = await httpClient.PutAsync("https://hound.127.0.0.1.nip.io:7300/api/v1/outputports", content);
+                        response.EnsureSuccessStatusCode();
+                        var responseContent = await response.Content.ReadAsStringAsync();
+                    }
+                }
+                catch(Exception e)
+                {
+
+                }
+                
+            }
+        }
+
+        private bool IgnoreSslErrors(HttpRequestMessage request, X509Certificate2 certificate, X509Chain chain, SslPolicyErrors sslPolicyErrors)
+        {
+            // Allow all SSL certificate errors
+            return true;
         }
     }
 }
