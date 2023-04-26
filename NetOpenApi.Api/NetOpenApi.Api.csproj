@@ -8,11 +8,15 @@
 
   <ItemGroup>
     <None Remove="api-key.txt" />
+    <None Remove="chat.html" />
     <None Remove="context.txt" />
   </ItemGroup>
 
   <ItemGroup>
     <Content Include="api-key.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="chat.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="context.txt">
