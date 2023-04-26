@@ -29,6 +29,18 @@ namespace NetOpenApi.Api
 
             app.UseHttpsRedirection();
 
+            app.MapGet("/", async (HttpContext context) =>
+            {
+                // Read the content of the HTML file
+                var htmlContent = await File.ReadAllTextAsync("chat.html");
+
+                // Set the content type header to indicate it's HTML
+                context.Response.Headers["Content-Type"] = "text/html";
+
+                // Write the HTML content to the response body
+                await context.Response.WriteAsync(htmlContent);
+            });
+
             app.MapPost("/chat", async (HttpContext httpContext, [FromBody] ChatRequest request, OpenAiConnector openAiConnector) =>
             {
                 return await openAiConnector.ProcessChatRequest(request);

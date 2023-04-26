@@ -1,0 +1,83 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+</head>
+<body style="margin: 0; padding: 0;">
+    <div style="height:310px; width: 400px; border: 1px solid black; overflow: hidden;">
+        <div style="width:100%; padding: 10px 0; background: #1b1b1b; color: white; text-align: center;">
+            SafeQ Cloud Chat Assistant
+        </div>
+        <div style="margin-bottom: 5px; width:400px;">
+            <textarea id="chatResponse" placeholder="What do you need help with?" style="width:379px; height: 150px; padding: 10px; resize: none;" disabled></textarea>
+        </div>
+        <div style="padding:5px; font-size: 10px;;">Ask your question...</div>
+        <div style="width: 400px;">
+            <textarea id="userInput" style="width:379px; padding:10px; height: 50px; resize: none;"></textarea>
+        </div>
+    </div>
+    <script>
+        var sessionId = "";
+        
+        function processChatResponse(jsonResponse) {
+            // Handle the JSON response here
+            console.log(jsonResponse);
+            
+            sessionId = jsonResponse.sessionId;
+            document.getElementById("chatResponse").value = jsonResponse.followupMessage;
+            document.getElementById("userInput").value = "";
+        }
+
+        function sendChatMessage(message) {
+            // Create the JSON object to send as payload
+            const payload = {
+                RequestMessage: message,
+                SessionId: sessionId
+            };
+
+            // Convert the JSON object to a string
+            const payloadString = JSON.stringify(payload);
+
+            // Create a new XMLHttpRequest object
+            const xhr = new XMLHttpRequest();
+
+            // Define the URL and options for the request
+            const url = 'https://localhost:7296/chat';
+            xhr.open('POST', url, true);
+            xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
+
+            // Set up the onload and onerror event handlers
+            xhr.onload = function () {
+                if (xhr.status >= 200 && xhr.status < 400) {
+                    // Parse the JSON response
+                    const jsonResponse = JSON.parse(xhr.responseText);
+                    processChatResponse(jsonResponse);
+                } else {
+                    // Handle errors
+                    console.error('Error:', xhr.statusText);
+                }
+            };
+
+            xhr.onerror = function () {
+                // Handle errors
+                console.error('Error:', xhr.statusText);
+            };
+
+            document.getElementById("chatResponse").value = "Processing...";
+
+            // Send the request with the payload as the request body
+            xhr.send(payloadString);
+        }
+        
+        var userInput = document.getElementById("userInput");
+        userInput.addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                sendChatMessage(userInput.value);
+            }
+        });
+        
+    </script>
+</body>
+</html>
